@@ -13,15 +13,53 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def distance(p1, p2):
+def get_distance(p1, p2):
     return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** 0.5
 
 
+def get_centroids(points):
+    x = 0
+    y = 0
+    for i in points:
+        x += i[0]
+        y += i[1]
+
+    return [x/len(points), y/len(points)]
+
+
+def get_argmin_index(l):
+    min = l[0]
+    index = 0
+    for i in range(1, len(l)):
+        if l[i] < min:
+            min = l[i]
+            index = i
+
+    return index
+
+
 def k_means(points, n, k):
-    clusters = [[] * k]
+    clusters = [[] for i in range(k)]
     centroids = []
+
+    # generate k centroids randomly
     for i in range(4):
         centroids.append(np.random.rand(2) * 50)
+
+
+    # clustering the points accroding to the centroids
+    for i in range(n):
+        distances = []
+        for j in range(k):
+            distances.append(get_distance(points[i], centroids[j]))
+
+        index = get_argmin_index(distances)
+        clusters[index].append(points[i])
+
+    # update the centroids
+
+    for i in range(k):
+        centroids[i] = get_centroids(clusters[i])
 
     print(centroids)
     print(clusters)
@@ -47,7 +85,11 @@ if __name__ == "__main__":
     x = np.concatenate((x1, x2, x3, x4), axis=0)
     y = np.concatenate((y1, y2, y3, y4), axis=0)
 
-    k_means((x, y), 1600, 4)
+    points = []
+    for i in range(1600):
+        points.append((x[i], y[i]))
+
+    k_means(points, 1600, 4)
     plt.plot(x, y, '.', markersize=2)
     plt.axis('equal')
     plt.show()
