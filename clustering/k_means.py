@@ -18,13 +18,15 @@ def get_distance(p1, p2):
 
 
 def get_centroids(points):
-    x = 0
-    y = 0
-    for i in points:
-        x += i[0]
-        y += i[1]
-
-    return [x/len(points), y/len(points)]
+    if len(points) == 0:
+        return [50, 50]
+    else:
+        x = 0
+        y = 0
+        for i in points:
+            x += i[0]
+            y += i[1]
+        return [x/len(points), y/len(points)]
 
 
 def get_argmin_index(l):
@@ -45,24 +47,37 @@ def k_means(points, n, k):
     # generate k centroids randomly
     for i in range(4):
         centroids.append(np.random.rand(2) * 50)
+        plt.scatter(centroids[i][0], centroids[i][1], marker='x')
 
+    it = 0
+    while it < 10:
+        # clustering the points accroding to the centroids
+        for i in range(n):
+            distances = []
+            for j in range(k):
+                distances.append(get_distance(points[i], centroids[j]))
 
-    # clustering the points accroding to the centroids
-    for i in range(n):
-        distances = []
-        for j in range(k):
-            distances.append(get_distance(points[i], centroids[j]))
+            index = get_argmin_index(distances)
+            clusters[index].append(points[i])
 
-        index = get_argmin_index(distances)
-        clusters[index].append(points[i])
+        plt.clf()
+        plt.axis([0, 120, 0, 100])
+        plt.suptitle("K-means Clustering", fontsize=20)
+        plt.xlabel('x', fontsize=10)
+        plt.ylabel('y', fontsize=10)
+        plt.text(100, 95, "iteration: {}".format(it))
+        # update the centroids
+        for i in range(k):
+            centroids[i] = get_centroids(clusters[i])
+            plt.scatter(centroids[i][0], centroids[i][1], marker='x')
 
-    # update the centroids
+        for i in range(k):
+            if not len(clusters[i]) == 0:
+                P = np.array(clusters[i][:])
+                plt.scatter(P[0:, 0], P[0:, 1], s=2)
 
-    for i in range(k):
-        centroids[i] = get_centroids(clusters[i])
-
-    print(centroids)
-    print(clusters)
+        plt.pause(0.6)
+        it += 1
 
 
 if __name__ == "__main__":
@@ -87,9 +102,17 @@ if __name__ == "__main__":
 
     points = []
     for i in range(1600):
-        points.append((x[i], y[i]))
+        points.append([x[i], y[i]])
+
+    plt.ion()
+    plt.suptitle("K-means Clustering", fontsize=20)
+    plt.axis([0, 120, 0, 100])
+    plt.xlabel('x', fontsize=10)
+    plt.ylabel('y', fontsize=10)
+    plt.plot(x, y, '.', markersize=2)
+    plt.pause(1)
 
     k_means(points, 1600, 4)
-    plt.plot(x, y, '.', markersize=2)
-    plt.axis('equal')
+
+    plt.ioff()
     plt.show()
