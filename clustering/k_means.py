@@ -116,3 +116,14 @@ if __name__ == "__main__":
 
     plt.ioff()
     plt.show()
+
+    # plt.suptitle("K-means Clustering", fontsize=20)
+    # plt.axis([0, 120, 0, 100])
+    # plt.xlabel('x', fontsize=10)
+    # plt.ylabel('y', fontsize=10)
+    # plt.plot(x, y, '.', markersize=2)
+    # plt.suptitle("K-means Clustering", fontsize=20)
+    # plt.axis([0, 120, 0, 100])
+    # plt.xlabel('x', fontsize=10)
+    # plt.ylabel('y', fontsize=10)
+    # plt.plot(x, y, '.', markersize=2)
